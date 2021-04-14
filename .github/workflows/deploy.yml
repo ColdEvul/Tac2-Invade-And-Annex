@@ -7,17 +7,36 @@ jobs:
     name: Create And Upload Release
     runs-on: ubuntu-latest
     steps:
+
+      - name: Setup env
+        run: |
+          apt-get update
+          apt-get install gcc pkg-config libssl-dev -y
+
       - name: Checkout code
         uses: actions/checkout@master
+
       - name: Get the version
         id: get_version
         run: echo ::set-output name=VERSION::${GITHUB_REF/refs\/tags\//}
 
-      - name: Install dependencies
+      - name: Checkout armake2
+        uses: actions/checkout@master
+        with:
+          repository: KoffeinFlummi/armake2
+          path: ./armake2
+
+      # setup cargo for building armake2 (rust)
+      - uses: actions-rs/toolchain@v1
+        with:
+          toolchain: stable          
+
+      - name: Build armake2
         run: |
-          sudo add-apt-repository ppa:koffeinflummi/armake -y
-          sudo apt update -y
-          sudo apt install armake -y
+          cd ./armake2
+          cargo build --release
+          mv target/release/armake2 /usr/bin/armake
+          cd ../
 
       - name: Build release
         run: ./tools/deploy.sh ${{ steps.get_version.outputs.VERSION }}
