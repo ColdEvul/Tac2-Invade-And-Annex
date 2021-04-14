@@ -52,39 +52,28 @@ def build_archive(archive_name='release', archive_type='zip', archive_input=outp
 def main():
     global tmpFolder
     tmpFolder = tempfile.mkdtemp()
-    print("DEBUG:   ", tmpFolder)
 
     for mission_files in glob.glob(os.path.join(ProjectRoot, 'Maps', '*')):
         for mission in glob.glob(mission_files):
             mission_name = os.path.basename(mission)
             new_mission_name = mission_name.replace('DEVBUILD', args.version)
 
-            print("DEBUG:   ", mission_name)
-            print("DEBUG:   ", new_mission_name)
-
             assembly_path = os.path.join(tmpFolder, new_mission_name)
             common_mission_files = os.path.join(os.path.join(ProjectRoot, 'CommonBase'))
-
-            print("DEBUG:   ", assembly_path)
-            print("DEBUG:   ", common_mission_files)
 
             print("Assembling '{}'...".format(new_mission_name))
 
             shutil.copytree(common_mission_files, assembly_path, dirs_exist_ok=True)
             shutil.copytree(mission, assembly_path, dirs_exist_ok=True)
-            
-            for debugShow in glob.glob(os.path.join(common_mission_files, "*")):
-                print("DEBUG:   ", debugShow)
-            for debugShow in glob.glob(os.path.join(mission, "*")):
-                print("DEBUG:   ", debugShow)
-            for debugShow in glob.glob(os.path.join(assembly_path, "*")):
-                print("DEBUG:   ", debugShow)
-
 
             mkDirectory("tmp")
             subprocess.call('armake build "{}" "{}.pbo"'.format(assembly_path, os.path.join(outputFolder, new_mission_name)), shell=True)
 
             print("Completed assembly of {}.".format(new_mission_name))
+
+    
+    for debugFile in glob.glob(os.path.join(outputFolder, '*')):
+        print("DEBUG:   ", debugFile, os.path.getsize(debugFile))
 
     archive_name = os.path.splitext(new_mission_name)[0]
     build_archive(archive_name)
