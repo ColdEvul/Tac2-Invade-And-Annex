@@ -35,7 +35,7 @@ jobs:
         run: |
           cd ./armake2
           cargo build --release
-          mv target/release/armake2 /usr/bin/armake
+          sudo mv target/release/armake2 /usr/bin/armake
           cd ../
 
       - name: Build release
