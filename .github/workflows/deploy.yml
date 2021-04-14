@@ -10,8 +10,8 @@ jobs:
 
       - name: Setup env
         run: |
-          apt-get update
-          apt-get install gcc pkg-config libssl-dev -y
+          sudo apt-get update
+          sudo apt-get install gcc pkg-config libssl-dev -y
 
       - name: Checkout code
         uses: actions/checkout@master
