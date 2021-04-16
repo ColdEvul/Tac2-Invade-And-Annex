@@ -8,11 +8,6 @@ jobs:
     runs-on: ubuntu-latest
     steps:
 
-      - name: Setup env
-        run: |
-          sudo apt-get update
-          sudo apt-get install gcc pkg-config libssl-dev -y
-
       - name: Checkout code
         uses: actions/checkout@master
 
@@ -20,26 +15,11 @@ jobs:
         id: get_version
         run: echo ::set-output name=VERSION::${GITHUB_REF/refs\/tags\//}
 
-      - name: Checkout armake2
-        uses: actions/checkout@master
+      - name: Use 7cav mission builder
+        uses: 7Cav/action-build-mission@develop
         with:
-          repository: KoffeinFlummi/armake2
-          path: ./armake2
-
-      # setup cargo for building armake2 (rust)
-      - uses: actions-rs/toolchain@v1
-        with:
-          toolchain: stable
-
-      - name: Build armake2
-        run: |
-          cd ./armake2
-          cargo build --release
-          sudo mv target/release/armake2 /usr/bin/armake
-          cd ../
-
-      - name: Build release
-        run: ./tools/deploy.sh ${{ steps.get_version.outputs.VERSION }}
+          missions-dir: Maps/
+          version-tag: ${{ steps.get_version.outputs.VERSION }}
 
       - name: Upload Release
         uses: JasonEtco/upload-to-release@master
