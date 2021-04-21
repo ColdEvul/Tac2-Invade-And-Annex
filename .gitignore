@@ -2,6 +2,6 @@
 /.vscode/*
 /tmp
 /doc/*
-/Maps/*
+!/Maps
 !/Maps/*/mission.sqm
 !/Maps/*/initServer.sqf
