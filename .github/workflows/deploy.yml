@@ -16,7 +16,7 @@ jobs:
         run: echo ::set-output name=VERSION::${GITHUB_REF/refs\/tags\//}
 
       - name: Use 7cav mission builder
-        uses: 7Cav/action-build-mission@develop
+        uses: ColdEvul/action-build-mission@develop
         with:
           missions-dir: Maps/
           version-tag: ${{ steps.get_version.outputs.VERSION }}
